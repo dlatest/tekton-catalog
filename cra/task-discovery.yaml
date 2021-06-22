@@ -101,6 +101,7 @@ spec:
           HTTP_RESPONSE=$(curl --silent --write-out "HTTPSTATUS:%{http_code}" \
             -X GET "${OTC_BROKER_BASE_URL}/globalauth/toolchainids/${TOOLCHAIN_ID}" \
             --header "Authorization: Bearer ${IBM_CLOUD_BEARER}")
+          echo "HTTP_RESPONSE: ${HTTP_RESPONSE}"
           HTTP_STATUS=$(echo $HTTP_RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
 
           if [ "$HTTP_STATUS" -eq 401 -o "$HTTP_STATUS" -eq 403 ]; then
@@ -117,7 +118,9 @@ spec:
           fi
 
           HTTP_BODY=$(echo $HTTP_RESPONSE | sed -e 's/HTTPSTATUS\:.*//g')
+          echo "HTTP_BODY: ${HTTP_BODY}"
           gitsecureUrl=$(echo ${HTTP_BODY} | jq -r '.service_urls.gitsecure')
+          echo "gitsecureUrl: ${gitsecureUrl}"
 
           if [ -z "$gitsecureUrl" -o "$gitsecureUrl" = "null" ]; then
             echo ""
